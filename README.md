@@ -1,0 +1,1 @@
+# DAI_Practical_Work_1_Magic_Image_CLI
