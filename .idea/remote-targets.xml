@@ -2,13 +2,13 @@
 <project version="4">
   <component name="RemoteTargetsManager">
     <targets>
-      <target name="WSL" type="wsl" uuid="10d20c47-ed25-426a-8ef6-2879b3e75f6e">
+      <target name="WSL" type="wsl" uuid="f3f1ad91-2600-4934-94ff-2f3d024abe27">
         <config>
           <option name="distributionMsId" value="Ubuntu" />
         </config>
         <ContributedStateBase type="JavaLanguageRuntime">
           <config>
-            <option name="homePath" value="/home/killian/.sdkman/candidates/java/22.0.2-tem" />
+            <option name="homePath" value="/home/killian/.sdkman/candidates/java/21.0.4-tem" />
           </config>
         </ContributedStateBase>
       </target>
