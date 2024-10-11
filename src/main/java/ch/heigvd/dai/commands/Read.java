@@ -16,6 +16,12 @@ public class Read implements Callable<Integer> {
 //            case ImageToAscii -> ;
 //            case Blur -> ;
 //        }
+        /*
+
+         Put function that needs to be called here
+
+         */
+
 
         System.out.println(
                 "Applying treatment "
