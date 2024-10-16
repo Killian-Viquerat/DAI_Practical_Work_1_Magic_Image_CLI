@@ -1,54 +1,52 @@
 package ch.heigvd.dai.features;
 
 import ch.heigvd.dai.BMP.BMPImage;
-import ch.heigvd.dai.BMP.BMPWriter;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import java.awt.*;
 import java.util.Arrays;
 
 public class PepperEffect implements Effect{
     public void applyEffect(BMPImage image) {
+        // Applies a gray-scale effect to the image to make sure it is gray-scaled (pepper removal on colored
+        // images is a very tedious task).
         GrayScaleEffect gs = new GrayScaleEffect();
-        gs.grayScale(image, "output.bmp");
+        gs.applyEffect(image);
 
-        Color[] treated = new Color[image.byteData.length];
+        Color[] treated = new Color[image.data.length];
 
-        int[] pixelsNeighbourhood = new int[9];
+        // A small kernel of the neighbourhood of a pixel, including itself.
+        // Note that all values are set to 255, it's for the sorting of the data.
+        int[] pixelsNeighbourhood = {255, 255, 255, 255, 255, 255, 255, 255, 255};
 
         for(int y = 0; y < image.height; y++){
             for(int x = 0; x < image.width; x++) {
-                int start1 = (y == 0) ? 0 : -1;
-                int start2 = (x == 0) ? 0 : -1;
-                int end1 = (y == image.height - 1) ? 0 : 1;
-                int end2 = (x == image.width - 1) ? 0 : 1;
+                // Determines the starting and end position of the neighbourhood, taking into account the
+                // borders of the image.
+                int startYPos = (y == 0) ? 0 : -1;
+                int startXPos = (x == 0) ? 0 : -1;
+                int endYPos = (y == image.height - 1) ? 0 : 1;
+                int endXPos = (x == image.width - 1) ? 0 : 1;
 
                 int index = 0;
-
-                for (int i = start1; i <= end1; i++) {
-                    for (int j = start2; j <= end2; j++) {
-                        pixelsNeighbourhood[index++] = image.byteData[(y+i) * image.width + (x+j)].getRed();
+                // Reads the value from the neighbours and stores it inside the pixelsNeighbourhood tab, increasing
+                // the number of pixels in the neighbourhood to easily know which value to take.
+                for (int i = startYPos; i <= endYPos; i++) {
+                    for (int j = startXPos; j <= endXPos; j++) {
+                        pixelsNeighbourhood[index++] = image.data[(y + i) * image.width + (x + j)].getRed();
                     }
                 }
-                int middle = index % 2 == 0 ? index / 2 : index / 2 + 1;
                 Arrays.sort(pixelsNeighbourhood);
+                int middle = index % 2 == 0 ? index / 2 : index / 2 + 1;
+
                 treated[y * image.width + x] = new Color(pixelsNeighbourhood[middle],
                         pixelsNeighbourhood[middle],
                         pixelsNeighbourhood[middle]);
+
+                // Sets all values inside the pixelNeighbourhood to 255 for the future sorting
+                for (int i = 0; i < 9; ++i)
+                    pixelsNeighbourhood[i] = 255;
             }
         }
-        image.byteData = treated;
-
-        try (FileOutputStream fos = new FileOutputStream("output.bmp");
-             BufferedOutputStream bos = new BufferedOutputStream(fos))
-        {
-            BMPWriter writer = new BMPWriter(bos, image);
-            writer.write();
-        }
-        catch (IOException e) {
-            System.err.println("IO Error: " + e);
-        }
+        image.data = treated;
     }
 }

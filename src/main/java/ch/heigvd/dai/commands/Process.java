@@ -1,15 +1,12 @@
 package ch.heigvd.dai.commands;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 import ch.heigvd.dai.BMP.*;
 import ch.heigvd.dai.features.*;
 import picocli.CommandLine;
-
-import ch.heigvd.dai.*;
 
 @CommandLine.Command(name = "bmp_treatment", description = "Apply specified treatment to BMP file.")
 public class Process implements Callable<Integer> {
@@ -37,6 +34,19 @@ public class Process implements Callable<Integer> {
             if(!(parent.getTreatment() == Root.ImageTreatmentOptions.ImageToAscii)){
                 BMPWriter writer = new BMPWriter(parent.getOutFilename(), image);
                 writer.write();
+            } else {
+                try(FileWriter fw = new FileWriter(parent.getOutFilename(), StandardCharsets.UTF_8);
+                    BufferedWriter bw = new BufferedWriter(fw)){
+                    for(int y = ((AsciiEffect) effect).data.length - 1; y >= 0; y--){
+                        for(int x = 0; x < ((AsciiEffect) effect).data[0].length - 1; x++){
+                            bw.write(((AsciiEffect) effect).data[y][x]);
+                        }
+                        bw.write("\n");
+                    }
+                    bw.flush();
+                }catch (IOException e){
+                    System.out.println("Error writing to file" + e.getMessage());
+                }
             }
 
             System.out.println(

@@ -11,11 +11,12 @@ public class BMPReader {
     private int curPos = 0;
 
     public BMPReader(String filename, BMPImage image) {
-        try (FileInputStream fis = new FileInputStream(filename);
-             BufferedInputStream bis = new BufferedInputStream(fis)) {
-            this.bis = bis;
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(filename);
+            this.bis = new BufferedInputStream(fis);;
             this.image = image;
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
@@ -27,10 +28,11 @@ public class BMPReader {
         if (image.compression!=0)
             throw new Exception("Compression not supported");
         getPixelData();
+        bis.close();
         return image;
     }
 
-    private void getBMPHeader() throws Exception{
+    private void getBMPHeader() throws IOException{
         image.magic = readShort();
         image.fileSize = readInt();
         image.reserved1 = readShort();
@@ -50,14 +52,14 @@ public class BMPReader {
 
         if (image.height < 0) image.height = -image.height;
     }
-
+    //Translate littleEndian into bigEndian for short
     private short readShort() throws IOException {
         int b1 = bis.read();
         int b2 = bis.read();
         curPos += 2;
         return (short)((b2 << 8) + b1);
     }
-
+    //Translate littleEndian into bigEndian for int
     private int readInt() throws IOException {
         int b1 = bis.read();
         int b2 = bis.read();
@@ -67,16 +69,16 @@ public class BMPReader {
         return ((b4 << 24) + (b3 << 16) + (b2 << 8) + b1);
     }
 
-    void getPixelData() throws  Exception {
+    void getPixelData() throws IOException {
         int skip = image.bitmapOffset - curPos;
         if(skip > 0) bis.skip(skip);
         int nbPixel = image.height * image.width;
-        image.byteData = new Color[nbPixel];
+        image.data = new Color[nbPixel];
         for(int i = 0; i < nbPixel; i++) {
             int b = bis.read();
             int g = bis.read();
             int r = bis.read();
-            image.byteData[i] = new Color(r,g,b);
+            image.data[i] = new Color(r,g,b);
         }
     }
 

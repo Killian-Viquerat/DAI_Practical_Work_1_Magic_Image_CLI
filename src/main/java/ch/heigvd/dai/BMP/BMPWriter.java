@@ -9,21 +9,22 @@ public class BMPWriter {
     private int curPos = 0;
 
     public BMPWriter(String filename, BMPImage image){
-        try (FileOutputStream fos = new FileOutputStream(filename);
-             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
-            this.bos = bos;
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filename);
+            bos = new BufferedOutputStream(fos);
             this.image = image;
         }catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
-
+    //Translate bigEndian into littleEndian for short
     private void writeShort(short data) throws IOException {
         bos.write(data & 0xFF) ;
         bos.write((data >> 8) & 0xFF) ;
         curPos += 2;
     }
-
+    //Translate bigEndian into littleEndian for Int
     private void writeInt(int data) throws IOException {
         bos.write(data & 0xFF) ;
         bos.write((data >> 8) & 0xFF) ;
@@ -56,14 +57,16 @@ public class BMPWriter {
         for(int i = 0; i < skip; i++){bos.write(0);}
         int nbPixel = image.height * image.width;
         for(int i = 0; i < nbPixel; i++) {
-            bos.write(image.byteData[i].getBlue());
-            bos.write(image.byteData[i].getGreen());
-            bos.write(image.byteData[i].getRed());
+            bos.write(image.data[i].getBlue());
+            bos.write(image.data[i].getGreen());
+            bos.write(image.data[i].getRed());
         }
     }
 
     public void write()throws IOException{
         writeHeader();
         writeData();
+        bos.flush();
+        bos.close();
     }
 }
