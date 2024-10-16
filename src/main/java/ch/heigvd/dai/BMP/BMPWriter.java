@@ -1,31 +1,34 @@
 package ch.heigvd.dai.BMP;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class BMPWriter {
 
-    BufferedOutputStream os;
+    BufferedOutputStream bos;
     BMPImage image;
     private int curPos = 0;
 
-    public BMPWriter(BufferedOutputStream os, BMPImage image){
-        this.os = os;
-        this.image = image;
+    public BMPWriter(String filename, BMPImage image){
+        try (FileOutputStream fos = new FileOutputStream(filename);
+             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+            this.bos = bos;
+            this.image = image;
+        }catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     private void writeShort(short data) throws IOException {
-        os.write(data & 0xFF) ;
-        os.write((data >> 8) & 0xFF) ;
+        bos.write(data & 0xFF) ;
+        bos.write((data >> 8) & 0xFF) ;
         curPos += 2;
     }
 
     private void writeInt(int data) throws IOException {
-        os.write(data & 0xFF) ;
-        os.write((data >> 8) & 0xFF) ;
-        os.write((data >> 16) & 0xFF) ;
-        os.write((data >> 24) & 0xFF) ;
+        bos.write(data & 0xFF) ;
+        bos.write((data >> 8) & 0xFF) ;
+        bos.write((data >> 16) & 0xFF) ;
+        bos.write((data >> 24) & 0xFF) ;
         curPos += 4;
     }
 
@@ -50,12 +53,12 @@ public class BMPWriter {
 
     private void writeData() throws IOException{
         int skip = image.bitmapOffset - curPos;
-        for(int i = 0; i < skip; i++){os.write(0);}
+        for(int i = 0; i < skip; i++){bos.write(0);}
         int nbPixel = image.height * image.width;
         for(int i = 0; i < nbPixel; i++) {
-            os.write(image.byteData[i].getBlue());
-            os.write(image.byteData[i].getGreen());
-            os.write(image.byteData[i].getRed());
+            bos.write(image.byteData[i].getBlue());
+            bos.write(image.byteData[i].getGreen());
+            bos.write(image.byteData[i].getRed());
         }
     }
 
