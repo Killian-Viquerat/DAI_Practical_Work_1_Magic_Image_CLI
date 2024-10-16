@@ -10,6 +10,7 @@ import picocli.CommandLine;
         },
         scope = CommandLine.ScopeType.INHERIT,
         mixinStandardHelpOptions = true)
+
 public class Root{
     public enum ImageTreatmentOptions {
         GrayScale,
@@ -31,6 +32,14 @@ public class Root{
     )
     protected ImageTreatmentOptions treatment;
 
+    @CommandLine.Option(
+            names = {"-s", "--size"},
+            description = "The size of the kernel used to average pixel together for the ascii effect (must be an odd number).",
+            required = false
+    )
+    protected int size = 9;
+
+    public int getSize() { return size; }
     public String getInFilename() {return filename;}
     public String getOutFilename()  {return output;}
 

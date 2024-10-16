@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import ch.heigvd.dai.BMP.*;
 
-public class GrayScale {
-    public void grayScale(BMPImage image, String outFilename) {
+public class GrayScaleEffect implements Effect {
+    public void applyEffect(BMPImage image) {
         int imgSize = image.byteData.length;
         Color[] treated = new Color[imgSize];
         int average;

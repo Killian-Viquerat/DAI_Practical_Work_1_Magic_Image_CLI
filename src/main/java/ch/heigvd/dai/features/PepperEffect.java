@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class PepperEffect implements Effect{
     public void applyEffect(BMPImage image) {
-        GrayScale gs = new GrayScale();
+        GrayScaleEffect gs = new GrayScaleEffect();
         gs.grayScale(image, "output.bmp");
 
         Color[] treated = new Color[image.byteData.length];
