@@ -1,31 +1,20 @@
 package ch.heigvd.dai.features;
 
 import java.awt.*;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import ch.heigvd.dai.BMP.*;
 
 public class GrayScaleEffect implements Effect {
     public void applyEffect(BMPImage image) {
-        int imgSize = image.byteData.length;
+        int imgSize = image.data.length;
         Color[] treated = new Color[imgSize];
         int average;
+        // Traverses every pixel of the image and makes an average of the color by summing the r/g/b values
+        // and dividing it by 3, and making a new color with this value.
         for (int i = 0; i < imgSize; i++) {
-            average = (image.byteData[i].getRed() + image.byteData[i].getGreen() + image.byteData[i].getBlue()) / 3;
+            average = (image.data[i].getRed() + image.data[i].getGreen() + image.data[i].getBlue()) / 3;
             treated[i] = new Color(average, average, average);
         }
-        image.byteData = treated;
-
-        try (FileOutputStream fos = new FileOutputStream(outFilename);
-             BufferedOutputStream bos = new BufferedOutputStream(fos))
-        {
-            BMPWriter writer = new BMPWriter(bos, image);
-            writer.write();
-        }
-        catch (IOException e) {
-            System.err.println("IO Error: " + e);
-        }
+        image.data = treated;
     }
 }

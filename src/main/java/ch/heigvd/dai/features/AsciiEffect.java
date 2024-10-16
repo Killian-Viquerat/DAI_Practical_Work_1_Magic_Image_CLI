@@ -2,39 +2,40 @@ package ch.heigvd.dai.features;
 
 import ch.heigvd.dai.BMP.BMPImage;
 
-import java.awt.*;
-import java.io.FileWriter;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-
 public class AsciiEffect implements Effect{
 
-    char[] character = {' ','.',':','-','=','+','*','#','%','@'};
-    int size = 41;
+    static private char[] character = {' ','.',':','-','=','+','*','#','%','@'};
+    private int size;
+    public char[][] data;
+
+    public AsciiEffect(int size){
+        this.size = size;
+    }
 
     public void applyEffect(BMPImage image){
-        int imgSize = image.byteData.length;
-        Color[] treated = new Color[imgSize];
-        int average;
-        for (int i = 0; i < imgSize; i++) {
-            average = (image.byteData[i].getRed() + image.byteData[i].getGreen() + image.byteData[i].getBlue()) / 3;
-            treated[i] = new Color(average, average, average);
-        }
-        image.byteData = treated;
+        //Turn the image from color to grayScale
+        GrayScaleEffect gray = new GrayScaleEffect();
+        gray.applyEffect(image);
 
+        //Find the new size of the image with integer division we loose some pixel in the process...
         int newWidth = image.width / size;
         int newHeight = image.height / size;
-        char[][] data = new char[newHeight][newWidth];
+
+        data = new char[newHeight][newWidth];
+
         for(int y = 0 ; y < newHeight; ++y){
             for(int x = 0 ; x < newWidth; ++x){
-                double average2 = 0;
+                //Go through the kernel of size * size to make an average of the pixel intensity and downgrade the image quality
+                double average = 0;
                 for(int i = -(size / 2) ; i <= (size / 2); ++i){
                     for (int j = -(size / 2) ; j <= (size / 2); ++j){
-                        average2 +=image.byteData[(y * size + size/2 + j) * image.width + (x * size + size/2 + i)].getBlue();
+                        average +=image.data[(y * size + size/2 + j) * image.width + (x * size + size/2 + i)].getBlue();
                     }
                 }
-                average2 /= (size * size);
-                data[y][x] = character[(int) (average2 / 255. * (double)character.length)];
+                //To really make an accurately average we divide the result by the number of pixel
+                average /= (size * size);
+                //Then the average is used to map the value of the luminosity to the index of a corresponding ASCII character representing it
+                data[y][x] = character[(int) (average / 255. * (double)character.length)];
             }
         }
     }

@@ -20,7 +20,7 @@ public class BMPImage {
     public int actualColorsUsed; // Nombre de couleurs utilisées dans l'image (0 pour toutes)
     public int importantColors; // Nombre de couleurs importantes (0 pour toutes)
 
-    public Color[] byteData;
+    public Color[] data;
     boolean topDown;
 
 
