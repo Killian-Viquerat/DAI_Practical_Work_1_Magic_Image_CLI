@@ -37,16 +37,5 @@ public class AsciiEffect implements Effect{
                 data[y][x] = character[(int) (average2 / 255. * (double)character.length)];
             }
         }
-
-        try (FileWriter writer = new FileWriter("output.txt", StandardCharsets.UTF_8);){
-            for (int y = data.length - 1; y >= 0; --y) {
-                for (int x = 0; x < data[0].length; x++) {
-                    writer.write(data[y][x]);
-                }
-                writer.write("\n");
-            }
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
     }
 }
