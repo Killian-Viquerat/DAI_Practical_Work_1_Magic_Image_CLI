@@ -6,13 +6,18 @@ import java.awt.*;
 
 public class BMPReader {
 
-    private BufferedInputStream is;
+    private BufferedInputStream bis;
     private BMPImage image;
     private int curPos = 0;
 
-    public BMPReader(BufferedInputStream is, BMPImage image) {
-        this.is = is;
-        this.image = image;
+    public BMPReader(String filename, BMPImage image) {
+        try (FileInputStream fis = new FileInputStream(filename);
+             BufferedInputStream bis = new BufferedInputStream(fis)) {
+            this.bis = bis;
+            this.image = image;
+        }catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public BMPImage read() throws Exception{
@@ -47,30 +52,30 @@ public class BMPReader {
     }
 
     private short readShort() throws IOException {
-        int b1 = is.read();
-        int b2 = is.read();
+        int b1 = bis.read();
+        int b2 = bis.read();
         curPos += 2;
         return (short)((b2 << 8) + b1);
     }
 
     private int readInt() throws IOException {
-        int b1 = is.read();
-        int b2 = is.read();
-        int b3 = is.read();
-        int b4 = is.read();
+        int b1 = bis.read();
+        int b2 = bis.read();
+        int b3 = bis.read();
+        int b4 = bis.read();
         curPos += 4;
         return ((b4 << 24) + (b3 << 16) + (b2 << 8) + b1);
     }
 
     void getPixelData() throws  Exception {
         int skip = image.bitmapOffset - curPos;
-        if(skip > 0) is.skip(skip);
+        if(skip > 0) bis.skip(skip);
         int nbPixel = image.height * image.width;
         image.byteData = new Color[nbPixel];
         for(int i = 0; i < nbPixel; i++) {
-            int b = is.read();
-            int g = is.read();
-            int r = is.read();
+            int b = bis.read();
+            int g = bis.read();
+            int r = bis.read();
             image.byteData[i] = new Color(r,g,b);
         }
     }

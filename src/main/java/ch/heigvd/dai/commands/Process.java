@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 
 import ch.heigvd.dai.BMP.BMPImage;
 import ch.heigvd.dai.BMP.BMPReader;
+import ch.heigvd.dai.BMP.BMPWriter;
 import ch.heigvd.dai.features.AsciiEffect;
 import ch.heigvd.dai.features.BlurEffect;
 import ch.heigvd.dai.features.Effect;
@@ -21,26 +22,22 @@ public class Process implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        try (FileInputStream fis = new FileInputStream(parent.getInFilename());
-        BufferedInputStream bis = new BufferedInputStream(fis)){
+        try {
             BMPImage image = new BMPImage();
-            BMPReader reader = new BMPReader(bis, image);
+            BMPReader reader = new BMPReader(parent.getInFilename(), image);
             reader.read();
 
-        Effect effect = switch (parent.getTreatment()){
-            case GrayScale -> null;
-            case PepperReduction -> new PepperEffect();
-            case ImageToAscii -> new AsciiEffect();
-            case Blur -> new BlurEffect();
-        };
-        /*
-
-         Put function that needs to be called here
-
-         */
+            Effect effect = switch (parent.getTreatment()) {
+                case GrayScale -> null;
+                case PepperReduction -> new PepperEffect();
+                case ImageToAscii -> new AsciiEffect();
+                case Blur -> new BlurEffect();
+            };
 
             effect.applyEffect(image);
 
+            BMPWriter writer = new BMPWriter(parent.getOutFilename(), image);
+            
             System.out.println(
                     "Applying treatment "
                             + parent.getTreatment()
@@ -50,11 +47,9 @@ public class Process implements Callable<Integer> {
                             + parent.getOutFilename()
                             + ".");
             return 0;
-        } catch (IOException e){
-            System.err.println("Error: " + e.getMessage());
-            return -1;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 }
