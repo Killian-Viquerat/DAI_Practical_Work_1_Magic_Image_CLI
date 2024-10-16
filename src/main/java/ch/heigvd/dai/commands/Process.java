@@ -9,6 +9,8 @@ import ch.heigvd.dai.BMP.BMPImage;
 import ch.heigvd.dai.BMP.BMPReader;
 import picocli.CommandLine;
 
+import ch.heigvd.dai.*;
+
 @CommandLine.Command(name = "bmp_treatment", description = "Apply specified treatment to BMP file.")
 public class Process implements Callable<Integer> {
     @CommandLine.ParentCommand protected Root parent;
