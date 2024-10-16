@@ -27,7 +27,9 @@ public class Read implements Callable<Integer> {
                 "Applying treatment "
                     + parent.getTreatment()
                     + " to BMP file "
-                    + parent.getFilename()
+                    + parent.getInFilename()
+                    + "and writing to "
+                    + parent.getOutFilename()
                     + ".");
         return 0;
     }
