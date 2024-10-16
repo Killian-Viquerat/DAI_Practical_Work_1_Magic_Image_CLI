@@ -8,7 +8,7 @@ import java.io.IOException;
 import ch.heigvd.dai.BMP.*;
 
 public class GrayScale {
-    public void grayScale(BMPImage image, String outFilename) {
+    void grayScale(BMPImage image, String outFilename) {
         int imgSize = image.byteData.length;
         Color[] treated = new Color[imgSize];
         int average;
@@ -21,8 +21,8 @@ public class GrayScale {
         try (FileOutputStream fos = new FileOutputStream(outFilename);
              BufferedOutputStream bos = new BufferedOutputStream(fos))
         {
- //           BMPWriter writer = new BMPWriter(bos, image);
- //           writer.write();
+            BMPWriter writer = new BMPWriter(bos, image);
+            writer.write();
         }
         catch (IOException e) {
             System.err.println("IO Error: " + e);
