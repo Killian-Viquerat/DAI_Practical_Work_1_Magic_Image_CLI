@@ -13,7 +13,7 @@ public class BlurEffect {
 
     static double[] kernel = {0.111,0.111,0.111,0.111,0.111,0.111,0.111,0.111,0.111};
 
-    void blurEffect(BMPImage image,String outFilename){
+    public void blurEffect(BMPImage image,String outFilename){
         Color[] data = image.byteData.clone();
         for(int y = 0; y < image.height; y++){
             for(int x = 0; x < image.width; x++){
