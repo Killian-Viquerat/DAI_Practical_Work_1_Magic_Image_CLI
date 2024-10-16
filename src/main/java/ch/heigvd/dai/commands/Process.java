@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 
 import ch.heigvd.dai.BMP.BMPImage;
 import ch.heigvd.dai.BMP.BMPReader;
+import ch.heigvd.dai.features.BlurEffect;
 import picocli.CommandLine;
 
 import ch.heigvd.dai.*;
@@ -21,6 +22,7 @@ public class Process implements Callable<Integer> {
         BufferedInputStream bis = new BufferedInputStream(fis)){
             BMPImage image = new BMPImage();
             BMPReader reader = new BMPReader(bis, image);
+
             reader.read();
 //        switch (parent.getTreatment()){
 //            case GrayScale -> ;
@@ -34,8 +36,8 @@ public class Process implements Callable<Integer> {
 
          */
 
-
-
+            BlurEffect effect = new BlurEffect();
+            effect.blurEffect(image, parent.getOutFilename());
 
             System.out.println(
                     "Applying treatment "
@@ -49,11 +51,8 @@ public class Process implements Callable<Integer> {
         } catch (IOException e){
             System.err.println("Error: " + e.getMessage());
             return -1;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        catch (Exception e){
-            System.err.println("Error: " + e.getMessage());
-            return -1;
-        }
-
     }
 }
