@@ -6,7 +6,7 @@ import picocli.CommandLine;
         description = "A CLI application for the treatment of BMP images",
         version = "SNAPSHOT-1.0.0",
         subcommands = {
-                Read.class,
+                Process.class,
         },
         scope = CommandLine.ScopeType.INHERIT,
         mixinStandardHelpOptions = true)
