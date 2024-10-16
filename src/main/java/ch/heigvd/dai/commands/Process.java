@@ -9,6 +9,7 @@ import ch.heigvd.dai.BMP.BMPImage;
 import ch.heigvd.dai.BMP.BMPReader;
 import ch.heigvd.dai.features.BlurEffect;
 import ch.heigvd.dai.features.Effect;
+import ch.heigvd.dai.features.PepperEffect;
 import picocli.CommandLine;
 
 import ch.heigvd.dai.*;
@@ -27,7 +28,7 @@ public class Process implements Callable<Integer> {
 
         Effect effect = switch (parent.getTreatment()){
             case GrayScale -> null;
-            case PepperReduction -> null;
+            case PepperReduction -> new PepperEffect();
             case ImageToAscii -> null ;
             case Blur -> new BlurEffect();
         };
