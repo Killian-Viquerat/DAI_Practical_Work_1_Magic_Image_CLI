@@ -10,7 +10,7 @@ import ch.heigvd.dai.BMP.BMPReader;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "bmp_treatment", description = "Apply specified treatment to BMP file.")
-public class Read implements Callable<Integer> {
+public class Process implements Callable<Integer> {
     @CommandLine.ParentCommand protected Root parent;
 
     @Override
