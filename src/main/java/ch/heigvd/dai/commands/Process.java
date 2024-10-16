@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 
 import ch.heigvd.dai.BMP.BMPImage;
 import ch.heigvd.dai.BMP.BMPReader;
+import ch.heigvd.dai.features.AsciiEffect;
 import ch.heigvd.dai.features.BlurEffect;
 import ch.heigvd.dai.features.Effect;
 import picocli.CommandLine;
@@ -28,7 +29,7 @@ public class Process implements Callable<Integer> {
         Effect effect = switch (parent.getTreatment()){
             case GrayScale -> null;
             case PepperReduction -> null;
-            case ImageToAscii -> null ;
+            case ImageToAscii -> new AsciiEffect();
             case Blur -> new BlurEffect();
         };
         /*
