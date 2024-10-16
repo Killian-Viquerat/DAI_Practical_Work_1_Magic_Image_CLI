@@ -66,7 +66,7 @@ import java.io.IOException;
     }
 }*/
 
-public class BlurEffect {
+public class BlurEffect implements Effect{
 
     static double[] kernel =
             {
@@ -75,7 +75,7 @@ public class BlurEffect {
                     0.111,0.111,0.111
             };
 
-    public void blurEffect(BMPImage image,String outFilename){
+    public void applyEffect(BMPImage image){
         Color[] data = new Color[image.width * image.height];
         for(int y = 0; y < image.height; y++){
             for(int x = 0; x < image.width; x++){
@@ -103,13 +103,5 @@ public class BlurEffect {
             }
         }
         image.byteData = data;
-
-        try(FileOutputStream fos = new FileOutputStream(outFilename);
-            BufferedOutputStream bos = new BufferedOutputStream(fos)){
-            BMPWriter bmpw = new BMPWriter(bos,image);
-            bmpw.write();
-        }catch(IOException e){
-            System.out.println(e.getMessage());
-        }
     }
 }
