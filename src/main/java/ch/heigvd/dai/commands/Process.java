@@ -21,6 +21,7 @@ public class Process implements Callable<Integer> {
         BufferedInputStream bis = new BufferedInputStream(fis)){
             BMPImage image = new BMPImage();
             BMPReader reader = new BMPReader(bis, image);
+            reader.read();
 //        switch (parent.getTreatment()){
 //            case GrayScale -> ;
 //            case PepperReduction -> ;
@@ -34,6 +35,8 @@ public class Process implements Callable<Integer> {
          */
 
 
+
+
             System.out.println(
                     "Applying treatment "
                             + parent.getTreatment()
@@ -44,6 +47,10 @@ public class Process implements Callable<Integer> {
                             + ".");
             return 0;
         } catch (IOException e){
+            System.err.println("Error: " + e.getMessage());
+            return -1;
+        }
+        catch (Exception e){
             System.err.println("Error: " + e.getMessage());
             return -1;
         }
