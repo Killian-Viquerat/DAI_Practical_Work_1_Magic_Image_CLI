@@ -5,13 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
-import ch.heigvd.dai.BMP.BMPImage;
-import ch.heigvd.dai.BMP.BMPReader;
-import ch.heigvd.dai.BMP.BMPWriter;
-import ch.heigvd.dai.features.AsciiEffect;
-import ch.heigvd.dai.features.BlurEffect;
-import ch.heigvd.dai.features.Effect;
-import ch.heigvd.dai.features.PepperEffect;
+import ch.heigvd.dai.BMP.*;
+import ch.heigvd.dai.features.*;
 import picocli.CommandLine;
 
 import ch.heigvd.dai.*;
@@ -23,21 +18,27 @@ public class Process implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
+
             BMPImage image = new BMPImage();
             BMPReader reader = new BMPReader(parent.getInFilename(), image);
             reader.read();
 
+            int size = parent.getSize() > 0 && parent.getSize() % 2 == 1 ? parent.getSize() : 9;
+
             Effect effect = switch (parent.getTreatment()) {
-                case GrayScale -> null;
+                case GrayScale -> new GrayScaleEffect();
                 case PepperReduction -> new PepperEffect();
-                case ImageToAscii -> new AsciiEffect();
+                case ImageToAscii -> new AsciiEffect(size);
                 case Blur -> new BlurEffect();
             };
 
             effect.applyEffect(image);
 
-            BMPWriter writer = new BMPWriter(parent.getOutFilename(), image);
-            
+            if(!(parent.getTreatment() == Root.ImageTreatmentOptions.ImageToAscii)){
+                BMPWriter writer = new BMPWriter(parent.getOutFilename(), image);
+                writer.write();
+            }
+
             System.out.println(
                     "Applying treatment "
                             + parent.getTreatment()
@@ -50,6 +51,7 @@ public class Process implements Callable<Integer> {
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
+            return -1;
         }
     }
 }
