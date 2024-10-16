@@ -8,7 +8,7 @@ import java.io.IOException;
 import ch.heigvd.dai.BMP.*;
 
 public class GrayScale {
-    void grayScale(BMPImage image, String outFilename) {
+    public void grayScale(BMPImage image, String outFilename) {
         int imgSize = image.byteData.length;
         Color[] treated = new Color[imgSize];
         int average;
