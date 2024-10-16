@@ -21,8 +21,8 @@ public class GrayScale {
         try (FileOutputStream fos = new FileOutputStream(outFilename);
              BufferedOutputStream bos = new BufferedOutputStream(fos))
         {
- //           BMPWriter writer = new BMPWriter(bos, image);
- //           writer.write();
+            BMPWriter writer = new BMPWriter(bos, image);
+            writer.write();
         }
         catch (IOException e) {
             System.err.println("IO Error: " + e);
