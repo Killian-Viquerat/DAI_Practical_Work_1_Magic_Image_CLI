@@ -25,7 +25,7 @@ public class Process implements Callable<Integer> {
             Effect effect = switch (parent.getTreatment()) {
                 case GrayScale -> new GrayScaleEffect();
                 case PepperReduction -> new PepperEffect();
-                case ImageToAscii -> new AsciiEffect(size);
+                case ImageToAscii -> new AsciiEffect(size, parent.getColor());
                 case Blur -> new BlurEffect();
             };
 
@@ -37,12 +37,16 @@ public class Process implements Callable<Integer> {
             } else {
                 try(FileWriter fw = new FileWriter(parent.getOutFilename(), StandardCharsets.UTF_8);
                     BufferedWriter bw = new BufferedWriter(fw)){
+                    if(parent.getColor()) bw.write("<div style=\"background-color: black\">");
                     for(int y = ((AsciiEffect) effect).data.length - 1; y >= 0; y--){
                         for(int x = 0; x < ((AsciiEffect) effect).data[0].length - 1; x++){
                             bw.write(((AsciiEffect) effect).data[y][x]);
                         }
+                        if(parent.getColor()) bw.write("<div></div>");
                         bw.write("\n");
+
                     }
+                    if(parent.getColor()) bw.write("</div>");
                     bw.flush();
                 }catch (IOException e){
                     System.out.println("Error writing to file" + e.getMessage());
